@@ -20,18 +20,18 @@ public class Mutations {
          * That's why I only use normal connections.
          */
 
-        NodeGene node1 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose one node
-        NodeGene node2 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose another node
-        NodeGene[] nodes = {node1, node2};
+        NodeGene[] nodes = randomlyChooseNodes(g);
 
         //I want the nodes in the array be both in the hidden layer, OR the first (in) node be a layer before the second one.
         //If that's not the case, this function will swap them.
         if (isReversed(nodes)) {
-            switchNodes(nodes);
+            nodes = switchNodes(nodes);
         }
 
         //nodes[0] is the start (in) neuron, nodes[1] is the end (out) neuron
-        //TODO I will complete this after I implement createNetwork() method in Genome
+        //TODO I will complete this after I implement addNode(Genome g)
+
+        //Check if this connection doesn't already exist
     }
 
     private NodeGene[] switchNodes(NodeGene[] nodes) {
@@ -48,5 +48,35 @@ public class Mutations {
             reversed = true;
         }
         return reversed;
+    }
+
+    public static void addNode(Genome g) {
+
+        /**
+         * Choose a random connection and disable it. Create a node and connect this node with the ends of the disabled connection.
+         * The first connection will have weight 1, the second one will have the same weight as the disabled connection.
+         */
+
+        //Randomly choose a connection
+        ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
+        if (!con.getExpressed()) {
+            System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
+            return;     //If the randomly chosen connection is disabled, this method ends
+        }
+
+        con.setExpressed(false);
+        System.out.println("MUTATION! Connection " + con.getInnovation() + ":  input node = " + con.getInNode() + "; output node = " + con.getOutNode() + "; weight = " + con.getWeight());
+        int nodeIndex = g.getNodes().size();
+        g.getNodes().put(nodeIndex, new NodeGene(NodeGene.Type.HIDDEN, 0));       //Create a node
+        g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), con.getInNode(), nodeIndex, 1, true));      //Create the first connection
+        g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), nodeIndex, con.getOutNode(), con.getWeight(), true));
+
+    }
+
+    private NodeGene[] randomlyChooseNodes(Genome g) {
+        NodeGene node1 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose one node
+        NodeGene node2 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose another node
+        NodeGene[] nodes = {node1, node2};
+        return nodes;
     }
 }

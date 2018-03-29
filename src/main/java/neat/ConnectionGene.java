@@ -29,7 +29,19 @@ public class ConnectionGene {
         return inNode;
     }
 
+    public int getOutNode() {
+        return outNode;
+    }
+
     public float getWeight() {
         return weight;
+    }
+
+    public boolean getExpressed() {
+        return expressed;
+    }
+
+    public void setExpressed(boolean expressed) {
+        this.expressed = expressed;
     }
 }

@@ -30,14 +30,15 @@ public class Genome {
         }
         nodes.put(Config.INPUTS, new NodeGene(NodeGene.Type.INPUT, 1));        // Bias
 
-        //Hidden layer
-        for (int i = Config.INPUTS + 1; i < Config.INPUTS + 1 + hiddenNodes; i++) {
-            nodes.put(i, new NodeGene(NodeGene.Type.HIDDEN, 0));
+        //Output layer
+        int inputSize = Config.INPUTS + 1;
+        for (int i = inputSize; i < inputSize + Config.OUTPUTS; i++) {
+            nodes.put(i, new NodeGene(NodeGene.Type.OUTPUT, 0));
         }
 
-        //Output layer
-        for (int i = Config.INPUTS + 1 + hiddenNodes; i < Config.INPUTS + 1 + hiddenNodes + Config.OUTPUTS; i++) {
-            nodes.put(i, new NodeGene(NodeGene.Type.OUTPUT, 0));
+        //Hidden layer
+        for (int i = inputSize + Config.OUTPUTS; i < inputSize + Config.OUTPUTS + hiddenNodes; i++) {
+            nodes.put(i, new NodeGene(NodeGene.Type.HIDDEN, 0));
         }
     }
 
@@ -61,13 +62,14 @@ public class Genome {
          * Creates connections between all input nodes (including bias) and all output nodes
          * Only used in the first generation; later generations will inherit the connection structure from their parents
          */
-        for (int i = 0; i < Config.INPUTS + 1; i++) {
+        int inputSize = Config.INPUTS + 1;
+        for (int i = 0; i < inputSize; i++) {
             for (int o = 0; o < Config.OUTPUTS; o++) {
                 //TODO: change how innovation works here. This version makes each initial genome have different innovation number.
                 //TODO: Therefore, crossover wouldn't be possible. I need to change the place where the innovation increments.
                 //TODO: Maybe I can create 1 set of initial connections somewhere else (Pool?) and copy it into all initial genomes.
                 float weight = getRandomWeight();
-                connections.add(new ConnectionGene(InnovationCounter.newInnovation(), i, o, weight, true));
+                connections.add(new ConnectionGene(InnovationCounter.newInnovation(), i, o + inputSize, weight, true));
             }
         }
     }
