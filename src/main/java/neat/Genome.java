@@ -68,16 +68,10 @@ public class Genome {
                 //TODO: change how innovation works here. This version makes each initial genome have different innovation number.
                 //TODO: Therefore, crossover wouldn't be possible. I need to change the place where the innovation increments.
                 //TODO: Maybe I can create 1 set of initial connections somewhere else (Pool?) and copy it into all initial genomes.
-                float weight = getRandomWeight();
+                float weight = Mutations.getRandomWeight();
                 connections.add(new ConnectionGene(InnovationCounter.newInnovation(), i, o + inputSize, weight, true));
             }
         }
-    }
-
-    private float getRandomWeight() {
-        //example: RANDOM_WEIGHT_RANGE = 1 => the weight can have a value between <-1; 1>
-        float weight = (rand.nextFloat() - 0.5f) * 2 * Config.RANDOM_WEIGHT_RANGE;
-        return weight;
     }
 
     public ArrayList<ConnectionGene> getConnections() {
@@ -86,5 +80,19 @@ public class Genome {
 
     public TreeMap<Integer, NodeGene> getNodes() {
         return nodes;
+    }
+
+    //Debugging
+    public void printConnections() {
+        for (ConnectionGene con: connections) {
+            System.out.println("Connection " + con.getInnovation() + ": inputNode = " + con.getInNode() + "; outputNode = " + con.getOutNode() + "; weight = " + con.getWeight() + "; expressed = " + con.getExpressed());
+        }
+    }
+
+    public void printNodes() {
+        for (int i = 0; i < nodes.size(); i++) {
+            NodeGene node = nodes.get(i);
+            System.out.println("Node " + i + ": type = " + node.getType());
+        }
     }
 }

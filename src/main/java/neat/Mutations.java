@@ -1,5 +1,7 @@
 package neat;
 
+import config.Config;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
@@ -29,26 +31,27 @@ public class Mutations {
 
         //If both nodes are in the input layer or in the output layer, connection cannot be created
         if (!isViable(nodes)) {
-            System.out.println("This connection isn't viable");
+            System.out.println("This connection isn't viable. NEXT!");
             return;
         }
 
         //I want the nodes in the array be both in the hidden layer, OR the first (in) node be a layer before the second one.
         //If that's not the case, this function will swap them.
         if (isReversed(nodes)) {
-            System.out.println("Oh, no! They are reversed! We need to reverse them back!");
             nodesIndexes = swapNodesIndexes(nodesIndexes);
-            System.out.println("After reversing: " + nodesIndexes[0] + " " + nodesIndexes[1]);
         }
 
         //nodes[0] is the start (in) neuron, nodes[1] is the end (out) neuron
 
         //Check if this connection doesn't already exist
         if (doesConnectionExist(nodesIndexes, g.getNodes(), g.getConnections())) {
-            System.out.println("This connection exists!");
+            System.out.println("This connection exists! NEXT!");
             return;
         }
-        System.out.println("This connection doesn't exist!");
+
+        //If everything went well, the connection can be created
+        createConnection(g, nodesIndexes);
+
     }
 
     private static boolean isViable(NodeGene[] nodes) {
@@ -95,7 +98,21 @@ public class Mutations {
             }
         }
         return exists;
-        //TODO: Write a test in MutationTest to check if this works
+    }
+
+    private static int[] randomlyChooseNodesIndexes(Genome g) {
+        int node1Index = rand.nextInt(g.getNodes().size());
+        int node2Index;
+        do {
+            node2Index = rand.nextInt(g.getNodes().size());
+        } while (node2Index == node1Index);
+        int[] nodesIndexes = {node1Index, node2Index};
+        return nodesIndexes;
+    }
+
+    private static void createConnection(Genome g, int[] nodesIndexes) {
+        System.out.println("Connection successfully created!");
+        g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), nodesIndexes[0], nodesIndexes[1], getRandomWeight(), true));
     }
 
     public static void addNode(Genome g) {
@@ -108,7 +125,7 @@ public class Mutations {
         //Randomly choose a connection
         ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
         if (!con.getExpressed()) {
-            //System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
+            System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
             return;     //If the randomly chosen connection is disabled, this method ends
         }
 
@@ -121,13 +138,10 @@ public class Mutations {
 
     }
 
-    private static int[] randomlyChooseNodesIndexes(Genome g) {
-        int node1Index = rand.nextInt(g.getNodes().size());
-        int node2Index;
-        do {
-            node2Index = rand.nextInt(g.getNodes().size());
-        } while (node2Index == node1Index);
-        int[] nodesIndexes = {node1Index, node2Index};
-        return nodesIndexes;
+    public static float getRandomWeight() {
+        //example: RANDOM_WEIGHT_RANGE = 1 => the weight can have a value between <-1; 1>
+        float weight = (rand.nextFloat() - 0.5f) * 2 * Config.RANDOM_WEIGHT_RANGE;
+        return weight;
     }
+
 }
