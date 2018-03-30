@@ -1,6 +1,8 @@
 package neat;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * Created by lukas on 28.3.2018.
@@ -10,9 +12,9 @@ import java.util.Random;
 
 public class Mutations {
 
-    private Random rand = new Random();
+    private static Random rand = new Random();
 
-    public void addConnection(Genome g) {
+    public static void addConnection(Genome g) {
 
         /**
          * I could (should?) implement the possibility of reversed (backwards) connections.
@@ -20,34 +22,80 @@ public class Mutations {
          * That's why I only use normal connections.
          */
 
-        NodeGene[] nodes = randomlyChooseNodes(g);
+        int[] nodesIndexes = randomlyChooseNodesIndexes(g);                                             //Indexes of the nodes in ArrayList
+        NodeGene[] nodes = {g.getNodes().get(nodesIndexes[0]), g.getNodes().get(nodesIndexes[1])};      //Node genes
+
+        System.out.println("Nodes chosen: " + nodesIndexes[0] + " " + nodesIndexes[1]);
+
+        //If both nodes are in the input layer or in the output layer, connection cannot be created
+        if (!isViable(nodes)) {
+            System.out.println("This connection isn't viable");
+            return;
+        }
 
         //I want the nodes in the array be both in the hidden layer, OR the first (in) node be a layer before the second one.
         //If that's not the case, this function will swap them.
         if (isReversed(nodes)) {
-            nodes = switchNodes(nodes);
+            System.out.println("Oh, no! They are reversed! We need to reverse them back!");
+            nodesIndexes = swapNodesIndexes(nodesIndexes);
+            System.out.println("After reversing: " + nodesIndexes[0] + " " + nodesIndexes[1]);
         }
 
         //nodes[0] is the start (in) neuron, nodes[1] is the end (out) neuron
-        //TODO I will complete this after I implement addNode(Genome g)
 
         //Check if this connection doesn't already exist
+        if (doesConnectionExist(nodesIndexes, g.getNodes(), g.getConnections())) {
+            System.out.println("This connection exists!");
+            return;
+        }
+        System.out.println("This connection doesn't exist!");
     }
 
-    private NodeGene[] switchNodes(NodeGene[] nodes) {
-        NodeGene temp = nodes[0];
-        nodes[0] = nodes[1];
-        nodes[1] = temp;
-        return nodes;
+    private static boolean isViable(NodeGene[] nodes) {
+        //Returns false if both nodes are in the input layer or in the output layer
+        boolean viable = true;
+        if (nodes[0].getType() == NodeGene.Type.INPUT && nodes[1].getType() == NodeGene.Type.INPUT
+                || nodes[0].getType() == NodeGene.Type.OUTPUT && nodes[1].getType() == NodeGene.Type.OUTPUT) {
+            viable = false;
+        }
+        return viable;
     }
 
-    private boolean isReversed(NodeGene[] nodes) {
+    private static boolean isReversed(NodeGene[] nodes) {
         boolean reversed = false;
         if (nodes[0].getType() == NodeGene.Type.HIDDEN && nodes[1].getType() == NodeGene.Type.INPUT
-                || nodes[0].getType() == NodeGene.Type.OUTPUT && nodes[1].getType() == NodeGene.Type.HIDDEN) {
+                || nodes[0].getType() == NodeGene.Type.OUTPUT && nodes[1].getType() == NodeGene.Type.HIDDEN
+                || nodes[0].getType() == NodeGene.Type.OUTPUT && nodes[1].getType() == NodeGene.Type.INPUT) {
             reversed = true;
         }
         return reversed;
+    }
+
+    private static int[] swapNodesIndexes(int[] nodesIndexes) {
+        int temp = nodesIndexes[0];
+        nodesIndexes[0] = nodesIndexes[1];
+        nodesIndexes[1] = temp;
+        return nodesIndexes;
+    }
+
+    private static boolean doesConnectionExist(int[] nodesIndexes, TreeMap<Integer, NodeGene> nodes, ArrayList<ConnectionGene> connections) {
+
+        /**
+         * Check if there is a connection between 2 nodes.
+         * If both nodes are in the hidden layer, both ways must be checked.
+         *      Example: node 2; node 5; I need to check both 2 -> 5 and 5 -> 2
+         */
+
+        boolean exists = false;
+        for (ConnectionGene con: connections) {
+            if (con.getInNode() == nodesIndexes[0] && con.getOutNode() == nodesIndexes[1]) {
+                exists = true;
+            } else if (con.getInNode() == nodesIndexes[1] && con.getOutNode() == nodesIndexes[0]) {     //This may happen if both nodes are in the hidden layer
+                exists = true;
+            }
+        }
+        return exists;
+        //TODO: Write a test in MutationTest to check if this works
     }
 
     public static void addNode(Genome g) {
@@ -60,7 +108,7 @@ public class Mutations {
         //Randomly choose a connection
         ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
         if (!con.getExpressed()) {
-            System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
+            //System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
             return;     //If the randomly chosen connection is disabled, this method ends
         }
 
@@ -73,10 +121,13 @@ public class Mutations {
 
     }
 
-    private NodeGene[] randomlyChooseNodes(Genome g) {
-        NodeGene node1 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose one node
-        NodeGene node2 = g.getNodes().get(rand.nextInt(g.getNodes().size()));     //Randomly choose another node
-        NodeGene[] nodes = {node1, node2};
-        return nodes;
+    private static int[] randomlyChooseNodesIndexes(Genome g) {
+        int node1Index = rand.nextInt(g.getNodes().size());
+        int node2Index;
+        do {
+            node2Index = rand.nextInt(g.getNodes().size());
+        } while (node2Index == node1Index);
+        int[] nodesIndexes = {node1Index, node2Index};
+        return nodesIndexes;
     }
 }

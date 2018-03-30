@@ -2,7 +2,6 @@ package tests;
 
 import neat.ConnectionGene;
 import neat.Genome;
-import neat.Mutations;
 import neat.NodeGene;
 
 import java.util.TreeMap;
@@ -10,6 +9,7 @@ import java.util.TreeMap;
 /**
  * Created by lukas on 28.3.2018.
  */
+
 public class GenomeTest {
     public static void main(String[] args) {
         Genome g = new Genome();

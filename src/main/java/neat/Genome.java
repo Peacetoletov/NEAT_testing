@@ -17,7 +17,7 @@ public class Genome {
      */
 
     private ArrayList<ConnectionGene> connections = new ArrayList<>();
-    private TreeMap<Integer, NodeGene> nodes = new TreeMap<>();
+    private TreeMap<Integer, NodeGene> nodes = new TreeMap<>();         //TODO: In future, check if this really has to be a TreeMap. Right now it seems like array would be completely fine.
     private Random rand = new Random();
 
     public void createNetwork() {
@@ -80,7 +80,7 @@ public class Genome {
         return weight;
     }
 
-    public List<ConnectionGene> getConnections() {
+    public ArrayList<ConnectionGene> getConnections() {
         return connections;
     }
 

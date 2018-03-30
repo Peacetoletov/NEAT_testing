@@ -16,6 +16,7 @@ public class MutationTest {
         g.createInitialConnections();
         g.createNetwork();
 
+        /*
         //System.out.println("Hidden nodes: " + g.countHiddenNodes(g.getConnections()));
         System.out.println("Before add node mutation:");
         for (ConnectionGene con: g.getConnections()) {
@@ -35,6 +36,16 @@ public class MutationTest {
             nodes = g.getNodes();
             System.out.println("There are " + nodes.size() + " nodes");
 
+        }
+        */
+
+        for (int i = 0; i < 5; i++) {
+            for (ConnectionGene con : g.getConnections()) {
+                System.out.println("Connection " + con.getInnovation() + ": input node = " + con.getInNode() + "; output node = " + con.getOutNode() + "; weight = " + con.getWeight() + "; expressed = " + con.getExpressed());
+            }
+
+            Mutations.addConnection(g);
+            System.out.println();
         }
 
     }
