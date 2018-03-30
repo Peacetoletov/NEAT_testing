@@ -19,6 +19,10 @@ public class NodeGene {
         this.value = value;
     }
 
+    public NodeGene copy() {
+        return new NodeGene(type, value);
+    }
+
     public Type getType() {
         return type;
     }

@@ -48,12 +48,12 @@ public class Genome {
 
         //Output layer
         for (int i = inputSize; i < inputSize + Config.OUTPUTS; i++) {
-            nodes.add(i, new NodeGene(NodeGene.Type.OUTPUT, 0));
+            nodes.add(new NodeGene(NodeGene.Type.OUTPUT, 0));
         }
 
         //Hidden layer
         for (int i = inputSize + Config.OUTPUTS; i < inputSize + Config.OUTPUTS + hiddenNodes; i++) {
-            nodes.add(i, new NodeGene(NodeGene.Type.HIDDEN, 0));
+            nodes.add(new NodeGene(NodeGene.Type.HIDDEN, 0));
         }
     }
 

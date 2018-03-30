@@ -26,11 +26,11 @@ public class Mutations {
         int[] nodesIndexes = randomlyChooseNodesIndexes(g);                                             //Indexes of the nodes in ArrayList
         NodeGene[] nodes = {g.getNodes().get(nodesIndexes[0]), g.getNodes().get(nodesIndexes[1])};      //Node genes
 
-        System.out.println("Nodes chosen: " + nodesIndexes[0] + " " + nodesIndexes[1]);
+        //System.out.println("Nodes chosen: " + nodesIndexes[0] + " " + nodesIndexes[1]);
 
         //If both nodes are in the input layer or in the output layer, connection cannot be created
         if (!isViable(nodes)) {
-            System.out.println("This connection isn't viable. NEXT!");
+            //System.out.println("This connection isn't viable. NEXT!");
             return;
         }
 
@@ -44,7 +44,7 @@ public class Mutations {
 
         //Check if this connection doesn't already exist
         if (doesConnectionExist(nodesIndexes, g.getConnections())) {
-            System.out.println("This connection exists! NEXT!");
+            //System.out.println("This connection exists! NEXT!");
             return;
         }
 
@@ -110,7 +110,7 @@ public class Mutations {
     }
 
     private static void createConnection(Genome g, int[] nodesIndexes) {
-        System.out.println("Connection successfully created!");
+        //System.out.println("Connection successfully created!");
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), nodesIndexes[0], nodesIndexes[1], getRandomWeight(), true));
     }
 
@@ -124,12 +124,12 @@ public class Mutations {
         //Randomly choose a connection
         ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
         if (!con.getExpressed()) {
-            System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
+            //System.out.println("Oh, no! We have randomly chosen a connection which is disabled!");
             return;     //If the randomly chosen connection is disabled, this method ends
         }
 
         con.setExpressed(false);
-        System.out.println("MUTATION! Connection " + con.getInnovation() + ":  input node = " + con.getInNode() + "; output node = " + con.getOutNode() + "; weight = " + con.getWeight());
+        //System.out.println("MUTATION! Connection " + con.getInnovation() + ":  input node = " + con.getInNode() + "; output node = " + con.getOutNode() + "; weight = " + con.getWeight());
         int nodeIndex = g.getNodes().size();
         g.getNodes().add(new NodeGene(NodeGene.Type.HIDDEN, 0));       //Create a node
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), con.getInNode(), nodeIndex, 1, true));      //Create the first connection

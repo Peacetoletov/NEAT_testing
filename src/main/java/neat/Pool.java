@@ -36,7 +36,7 @@ public class Pool {
     private static ArrayList<ConnectionGene> copyConnections(ArrayList<ConnectionGene> originalConnections) {
         ArrayList<ConnectionGene> connections = new ArrayList<>();
         for (ConnectionGene con: originalConnections) {
-            connections.add(new ConnectionGene(con.getInnovation(), con.getInNode(), con.getOutNode(), con.getWeight(), con.getExpressed()));
+            connections.add(con.copy());
         }
         return connections;
     }
@@ -44,7 +44,7 @@ public class Pool {
     private static ArrayList<NodeGene> copyNodes(ArrayList<NodeGene> originalNodes) {
         ArrayList<NodeGene> nodes = new ArrayList<>();
         for (NodeGene node: originalNodes) {
-            nodes.add(new NodeGene(node.getType(), node.getValue()));
+            nodes.add(node.copy());
         }
         return nodes;
     }

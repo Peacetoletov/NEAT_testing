@@ -25,6 +25,10 @@ public class ConnectionGene {
         this.weight = Mutations.getRandomWeight();
     }
 
+    public ConnectionGene copy() {
+        return new ConnectionGene(innovation, inNode, outNode, weight, expressed);
+    }
+
     public int getInnovation() {
         return innovation;
     }
