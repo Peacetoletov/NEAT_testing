@@ -22,4 +22,8 @@ public class NodeGene {
     public Type getType() {
         return type;
     }
+
+    public float getValue() {
+        return value;
+    }
 }

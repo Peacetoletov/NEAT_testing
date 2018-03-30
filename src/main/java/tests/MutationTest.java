@@ -5,16 +5,12 @@ import neat.Genome;
 import neat.Mutations;
 import neat.NodeGene;
 
-import java.util.TreeMap;
-
 /**
  * Created by lukas on 29.3.2018.
  */
 public class MutationTest {
     public static void main(String[] args) {
         Genome g = new Genome();
-        g.createInitialConnections();
-        g.createNetwork();
 
         for (int i = 0; i < 5; i++) {
             Mutations.addNode(g);

@@ -21,6 +21,10 @@ public class ConnectionGene {
         this.expressed = expressed;
     }
 
+    public void randomizeWeight() {
+        this.weight = Mutations.getRandomWeight();
+    }
+
     public int getInnovation() {
         return innovation;
     }

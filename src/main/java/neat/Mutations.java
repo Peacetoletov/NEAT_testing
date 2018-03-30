@@ -4,7 +4,6 @@ import config.Config;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.TreeMap;
 
 /**
  * Created by lukas on 28.3.2018.
@@ -44,7 +43,7 @@ public class Mutations {
         //nodes[0] is the start (in) neuron, nodes[1] is the end (out) neuron
 
         //Check if this connection doesn't already exist
-        if (doesConnectionExist(nodesIndexes, g.getNodes(), g.getConnections())) {
+        if (doesConnectionExist(nodesIndexes, g.getConnections())) {
             System.out.println("This connection exists! NEXT!");
             return;
         }
@@ -81,7 +80,7 @@ public class Mutations {
         return nodesIndexes;
     }
 
-    private static boolean doesConnectionExist(int[] nodesIndexes, TreeMap<Integer, NodeGene> nodes, ArrayList<ConnectionGene> connections) {
+    private static boolean doesConnectionExist(int[] nodesIndexes, ArrayList<ConnectionGene> connections) {
 
         /**
          * Check if there is a connection between 2 nodes.
@@ -132,7 +131,7 @@ public class Mutations {
         con.setExpressed(false);
         System.out.println("MUTATION! Connection " + con.getInnovation() + ":  input node = " + con.getInNode() + "; output node = " + con.getOutNode() + "; weight = " + con.getWeight());
         int nodeIndex = g.getNodes().size();
-        g.getNodes().put(nodeIndex, new NodeGene(NodeGene.Type.HIDDEN, 0));       //Create a node
+        g.getNodes().add(new NodeGene(NodeGene.Type.HIDDEN, 0));       //Create a node
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), con.getInNode(), nodeIndex, 1, true));      //Create the first connection
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), nodeIndex, con.getOutNode(), con.getWeight(), true));
 

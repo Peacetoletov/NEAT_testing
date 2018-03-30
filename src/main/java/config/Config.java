@@ -10,4 +10,7 @@ public class Config {
 
     //Randomness
     public static final float RANDOM_WEIGHT_RANGE = 1;          //example: RANDOM_WEIGHT_RANGE = 1 => a weight can have a value between <-1; 1>
+
+    //Population
+    public static final int POPULATION = 2;
 }
