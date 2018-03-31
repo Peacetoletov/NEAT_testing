@@ -10,6 +10,12 @@ import java.util.ArrayList;
  */
 public class Species {
 
+    private ArrayList<Genome> genomes = new ArrayList<>();
+
+    public Species(Genome representativeGenome) {
+        this.genomes.add(representativeGenome);
+    }
+
     public static boolean isSameSpecies(Genome g1, Genome g2) {
         //genomesInnovation[0] has higher innovation than genomesInnovation[1]
         Genome[] genomesInnovation = sortByInnovation(g1, g2);
@@ -64,7 +70,7 @@ public class Species {
             //System.out.println("excess = " + excess + "; disjoint = " + disjoint + "; matching = " + matching + "; avgWeightDifference = " + avgWeightDifference);
 
         float delta = ((Config.EXCESS_COEFFICIENT * excess + Config.DISJOINT_COEFFICIENT * disjoint) / connections) + Config.WEIGHT_COEFFICIENT * avgWeightDifference;
-            //System.out.println("Delta = " + delta);
+            System.out.println("Delta = " + delta);
         return delta < Config.DELTA_THRESHOLD;
     }
 
@@ -93,4 +99,13 @@ public class Species {
             return con2.size();
         }
     }
+
+    public void addGenome(Genome g) {
+        this.genomes.add(g);
+    }
+
+    public ArrayList<Genome> getGenomes() {
+        return genomes;
+    }
+
 }

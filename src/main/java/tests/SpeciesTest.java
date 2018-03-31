@@ -10,6 +10,7 @@ public class SpeciesTest {
         Pool.createInitialPopulation();
         Genome[] genomes = Pool.getGenomes();
 
+
         //Make some mutation to one genome
         for (int i = 0; i < 2; i++) {
             Mutations.addNode(genomes[0]);
@@ -28,6 +29,7 @@ public class SpeciesTest {
 
 
         //Print the structures of the genomes
+        /*
         System.out.println("First genome:");
         genomes[0].printConnections();
         genomes[0].printNodes();
@@ -39,12 +41,16 @@ public class SpeciesTest {
         System.out.println("Second genome's size = " + genomes[1].getConnections().size());
 
         System.out.println("Same species? " + Species.isSameSpecies(genomes[0], genomes[1]));
+        */
 
         //Create children
-        System.out.println("Creating children");
+        //System.out.println("Creating children");
         Genome child1 = Crossover.crossover(genomes[0], genomes[1]);
+        Pool.addGenomeToSpecies(child1);
         Genome child2 = Crossover.crossover(genomes[0], genomes[1]);
+        Pool.addGenomeToSpecies(child2);
 
+        /*
         System.out.println("First child:");
         child1.printConnections();
         child1.printNodes();
@@ -56,6 +62,8 @@ public class SpeciesTest {
         System.out.println("Second child's size = " + child2.getConnections().size());
 
         System.out.println("Same species? " + Species.isSameSpecies(child1, child2));
+        */
+
 
     }
 }
