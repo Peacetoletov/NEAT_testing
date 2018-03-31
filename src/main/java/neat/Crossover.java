@@ -23,7 +23,7 @@ public class Crossover {
         //Find out which genome is more fit
         Genome[] genomesFitness = sortByFitness(g1, g2);        //genomesFitness[0] is more fit than genomesFitness[1]
 
-        System.out.println("After sorting: genomesFitness[0] = " + genomesFitness[0].getFitness() + "; genomesFitness[1] = " + genomesFitness[1].getFitness());
+            //System.out.println("After sorting: genomesFitness[0] = " + genomesFitness[0].getFitness() + "; genomesFitness[1] = " + genomesFitness[1].getFitness());
 
         //Declare the structure of the child
         ArrayList<ConnectionGene> childConnections = new ArrayList<>();
@@ -74,7 +74,8 @@ public class Crossover {
         return genomes;
     }
 
-    private static int checkMatching(int innovation1, ArrayList<ConnectionGene> connections) {
+    public static int checkMatching(int innovation1, ArrayList<ConnectionGene> connections) {
+
         /**
          * Checks if a gene from one ArrayList (represented by innovation1) corresponds with a gene from another ArrayList (represented by connection).
          * If these 2 genes are matching, returns the index of the connection in the ArrayList.

@@ -10,6 +10,13 @@ import java.util.ArrayList;
  */
 
 public class Pool {
+
+    /**
+     * I finally found out why there was a poolStaleness in the code I downloaded.
+     * It's explained at the very bottom of page 12.
+     * If the entire population does not get better for 20 generations, only the top 2 species are allowed to reproduce.
+     */
+
     private static Genome[] genomes = new Genome[Config.POPULATION];         //I'm not sure if I want to store all genomes in an array
 
     public static void createInitialPopulation() {

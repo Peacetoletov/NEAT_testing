@@ -13,4 +13,10 @@ public class Config {
 
     //Population
     public static final int POPULATION = 2;
+
+    //Speciation
+    public static final float EXCESS_COEFFICIENT = 2.0f;        //Paper: 1.0; other source code: 2.0
+    public static final float DISJOINT_COEFFICIENT = 2.0f;      //Paper: 1.0; other source code: 2.0
+    public static final float WEIGHT_COEFFICIENT = 0.4f;        //Paper: 0.4; other source code: 0.4
+    public static final float DELTA_THRESHOLD = 1.0f;             //Paper: 3.0; other source code: 1.0
 }
