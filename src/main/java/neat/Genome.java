@@ -36,6 +36,10 @@ public class Genome {
             }
         }
 
+        /**
+         * Nodes must be created exactly in this order: input -> bias -> output -> hidden
+         * This is due to the way NeuralNetwork puts inputs to the input nodes
+         */
         //Create nodes
         int hiddenNodes = countHiddenNodes(connections);
         //Input layer

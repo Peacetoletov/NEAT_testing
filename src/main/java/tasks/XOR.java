@@ -11,6 +11,10 @@ public class XOR {
 
         float fitness = 0;
 
+        //testing
+        float[] input = {1.1f, 1.2f};
+        network.getOutput(input);
+
 
         return fitness;
     }

@@ -23,6 +23,14 @@ public class NodeGene {
         return new NodeGene(type, value);
     }
 
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+    public void addValue(float value) {
+        this.value += value;
+    }
+
     public Type getType() {
         return type;
     }
