@@ -1,6 +1,7 @@
 package neat;
 
 import config.Config;
+import tasks.XOR;
 
 import java.util.*;
 
@@ -35,11 +36,8 @@ public class Genome {
             }
         }
 
-        /**
-         * Creates and adds NodeGene objects into TreeMap nodes.
-         */
-        int hiddenNodes = countHiddenNodes(connections);
         //Create nodes
+        int hiddenNodes = countHiddenNodes(connections);
         //Input layer
         for (int i = 0; i < Config.INPUTS; i++) {
             nodes.add(new NodeGene(NodeGene.Type.INPUT, 0));
@@ -62,7 +60,7 @@ public class Genome {
         this.nodes = nodes;
     }
 
-    public int countHiddenNodes(List<ConnectionGene> connections) {
+    private int countHiddenNodes(List<ConnectionGene> connections) {
         /**
          * This method loops through all nodes except for output nodes.
          * It stores the innovation number of the input end each connection.
@@ -75,6 +73,11 @@ public class Genome {
         }
         int hiddenNodes = uniqueNodes.size() - (Config.INPUTS + 1);
         return hiddenNodes;
+    }
+
+    public void evaluate() {
+        NeuralNetwork network = new NeuralNetwork(connections, nodes);
+        this.fitness = XOR.evaluate(network);
     }
 
     public ArrayList<ConnectionGene> getConnections() {

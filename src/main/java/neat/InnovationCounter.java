@@ -6,7 +6,7 @@ package neat;
 
 public class InnovationCounter {
 
-    private static int innovation = 0;
+    private static int innovation = -1;     //-1 so that the first innovation is 0
 
     public static int newInnovation() {
         innovation++;

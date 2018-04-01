@@ -62,7 +62,7 @@ public class Pool {
         for (Species s: species) {
             //If a given species has no members, I can either delete it or skip it. I chose the skip option.
             if (s.getGenomes().size() == 0) {
-                continue;
+                continue;       //TODO: In future, once everything else is completed, try changing this to removing instead of skipping.
             }
 
             //Compare this genome with a representative genome of the species s.
