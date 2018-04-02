@@ -11,10 +11,18 @@ public class XOR {
 
         float fitness = 0;
 
-        //testing
-        float[] input = {1.1f, 1.2f};
-        network.getOutput(input);
-
+        for (int input1 = 0; input1 <= 1; input1++) {
+            for (int input2 = 0; input2 <= 1; input2++) {
+                float[] input = {input1, input2};
+                float[] output = network.getOutput(input);
+                float desiredOutput = 0;
+                if (input1 != input2) {
+                    desiredOutput = 1;
+                }
+                fitness += 1 - Math.abs(output[0] - desiredOutput);
+                //System.out.println("Input = " + input1 + "|" + input2 + "; desired output = " + desiredOutput + "; output = " + output[0] + "; fitness = " + fitness + "\n");
+            }
+        }
 
         return fitness;
     }

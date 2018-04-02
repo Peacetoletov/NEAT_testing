@@ -17,7 +17,8 @@ public class ConnectionGene {
         this.innovation = innovation;
         this.inNode = inNode;
         this.outNode = outNode;
-        this.weight = weight;
+        //this.weight = weight;     //TODO: change this back!
+        this.weight = 1;
         this.expressed = expressed;
     }
 

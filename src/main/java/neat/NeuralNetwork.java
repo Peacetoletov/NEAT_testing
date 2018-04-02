@@ -2,7 +2,6 @@ package neat;
 
 import config.Config;
 
-import javax.xml.soap.Node;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +21,7 @@ public class NeuralNetwork {
      */
 
     private ArrayList<ConnectionGene> connections = new ArrayList<>();      //Contains information about all connections
-    private ArrayList<NodeGene> nodes = new ArrayList<>();            //this one may not be necessary
+    private ArrayList<NodeGene> nodes = new ArrayList<>();
 
     /**
      * About nodeConnectionPairs:
@@ -73,7 +72,8 @@ public class NeuralNetwork {
             if (!keepGoing) {
                 break;
             }
-            System.out.println("\nGoing another cycle\n");
+            //Debugging
+            //System.out.println("\nGoing another cycle\n");
         }
 
         //Get output
@@ -91,7 +91,7 @@ public class NeuralNetwork {
         }
 
         //Reset the state of the network (bias)
-        nodes.get(Config.INPUTS + 1).setValue(1);       //This works because of the order in which nodes are created
+        nodes.get(Config.INPUTS).setValue(1);       //This works because of the order in which nodes are created
 
         //Return output
         System.out.println("Output[0] = " + output[0]);

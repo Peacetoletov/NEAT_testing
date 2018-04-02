@@ -8,7 +8,7 @@ public class NodeGene {
     public enum Type {
         INPUT,
         HIDDEN,
-        OUTPUT;
+        OUTPUT
     }
 
     private Type type;
