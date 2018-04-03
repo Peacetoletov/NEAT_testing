@@ -11,6 +11,9 @@ import java.util.Random;
  * Mutations may happen when a new generation is created. They take place after crossover happens.
  */
 
+//TODO: Implement changeWeight
+//TODO: maybe implement disableConnection and enableConnection mutations? It's not in the paper, but it's in the other source code
+
 public class Mutations {
 
     private static Random rand = new Random();
@@ -135,6 +138,18 @@ public class Mutations {
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), con.getInNode(), nodeIndex, 1, true));      //Create the first connection
         g.getConnections().add(new ConnectionGene(InnovationCounter.newInnovation(), nodeIndex, con.getOutNode(), con.getWeight(), true));
 
+    }
+
+    public static void perturbWeight(Genome g) {
+        //Randomly choose a connection
+        ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
+        con.setWeight(con.getWeight() * (rand.nextFloat() - 0.5f) * 2 * Config.WEIGHT_PERTURB_RANGE);
+    }
+
+    public static void assignRandomWeight(Genome g) {
+        //Randomly choose a connection
+        ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
+        con.setWeight(getRandomWeight());
     }
 
     public static float getRandomWeight() {

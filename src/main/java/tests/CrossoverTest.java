@@ -12,6 +12,7 @@ import neat.Pool;
 public class CrossoverTest {
     public static void main(String[] args) {
         Pool.createInitialPopulation();
+
         Genome[] genomes = Pool.getGenomes();
 
         System.out.println("Genome 1 fitness = " + genomes[0].getFitness() + "; Genome 2 fitness = " + genomes[1].getFitness());

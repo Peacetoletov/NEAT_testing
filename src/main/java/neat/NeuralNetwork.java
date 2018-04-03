@@ -94,7 +94,7 @@ public class NeuralNetwork {
         nodes.get(Config.INPUTS).setValue(1);       //This works because of the order in which nodes are created
 
         //Return output
-        System.out.println("Output[0] = " + output[0]);
+            //System.out.println("Output[0] = " + output[0]);
         return output;
     }
 
@@ -151,7 +151,7 @@ public class NeuralNetwork {
 
                 //Send this value multiplied by the connection weight to the output node (not necessarily in the output layer)
                 NodeGene outputNode = nodes.get(con.getOutNode());
-                System.out.println("Node " + i + ": adding " + node.getValue() * con.getWeight() + " value to " + con.getOutNode());
+                    //System.out.println("Node " + i + ": adding " + node.getValue() * con.getWeight() + " value to " + con.getOutNode());
                 outputNode.addValue(node.getValue() * con.getWeight());
             }
 

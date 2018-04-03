@@ -10,60 +10,24 @@ public class SpeciesTest {
         Pool.createInitialPopulation();
         Genome[] genomes = Pool.getGenomes();
 
-
-        //Make some mutation to one genome
-        for (int i = 0; i < 2; i++) {
-            Mutations.addNode(genomes[0]);
-        }
-        for (int i = 0; i < 2; i++) {
-            Mutations.addConnection(genomes[0]);
-        }
-
-        //Make some mutation to the other genome
-        for (int i = 0; i < 2; i++) {
-            Mutations.addNode(genomes[1]);
-        }
-        for (int i = 0; i < 2; i++) {
-            Mutations.addConnection(genomes[1]);
-        }
-
-
-        //Print the structures of the genomes
         /*
-        System.out.println("First genome:");
-        genomes[0].printConnections();
-        genomes[0].printNodes();
-        System.out.println("First genome's size = " + genomes[0].getConnections().size());
+        //This works when I temporarily disable addGenomeToSpecies(genomes[i]); in createInitialPopulation in Pool
+        for (int i = 0; i < 3; i++) {
+            Mutations.addNode(genomes[4]);
+        }
 
-        System.out.println("\nSecond genome:");
-        genomes[1].printConnections();
-        genomes[1].printNodes();
-        System.out.println("Second genome's size = " + genomes[1].getConnections().size());
+        for (int i = 0; i < 3; i++) {
+            Mutations.addConnection(genomes[4]);
+        }
 
-        System.out.println("Same species? " + Species.isSameSpecies(genomes[0], genomes[1]));
-        */
-
-        //Create children
-        //System.out.println("Creating children");
-        Genome child1 = Crossover.crossover(genomes[0], genomes[1]);
-        Pool.addGenomeToSpecies(child1);
-        Genome child2 = Crossover.crossover(genomes[0], genomes[1]);
-        Pool.addGenomeToSpecies(child2);
-
-        /*
-        System.out.println("First child:");
-        child1.printConnections();
-        child1.printNodes();
-        System.out.println("First child's size = " + child1.getConnections().size());
-
-        System.out.println("\nSecond child:");
-        child2.printConnections();
-        child2.printNodes();
-        System.out.println("Second child's size = " + child2.getConnections().size());
-
-        System.out.println("Same species? " + Species.isSameSpecies(child1, child2));
+        for (Genome g: genomes) {
+            Pool.addGenomeToSpecies(g);
+        }
         */
 
 
+        System.out.println("There are " + Pool.getSpecies().size() + " species.");
+
+        Pool.createNextGeneration();
     }
 }

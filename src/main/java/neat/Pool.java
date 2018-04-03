@@ -17,7 +17,7 @@ public class Pool {
      * If the entire population does not get better for 20 generations, only the top 2 species are allowed to reproduce.
      */
 
-    private static Genome[] genomes = new Genome[Config.POPULATION];         //I'm not sure if I want to store all genomes in an array
+    private static Genome[] genomes = new Genome[Config.POPULATION];         //I'm not sure if I want to store all genomes in an array here in Pool
     private static ArrayList<Species> species = new ArrayList<>();
 
     public static void createInitialPopulation() {
@@ -58,11 +58,13 @@ public class Pool {
         return nodes;
     }
 
+    //change to private
     public static void addGenomeToSpecies(Genome g) {
         for (Species s: species) {
             //If a given species has no members, I can either delete it or skip it. I chose the skip option.
             if (s.getGenomes().size() == 0) {
                 continue;       //TODO: In future, once everything else is completed, try changing this to removing instead of skipping.
+                                //never mind, I'm overriding the ArrayList species anyway whenever I create a new generation
             }
 
             //Compare this genome with a representative genome of the species s.
@@ -81,8 +83,65 @@ public class Pool {
             //System.out.println("Creating a new species");
     }
 
+    public static void createNextGeneration() {
+        float totalSpeciesFitness = 0;
+        for (Species s: species) {
+            //Test their fitness
+            for (Genome g: s.getGenomes()) {
+                g.evaluate();
+                //System.out.println("This genome has fitness: " + g.getFitness());
+            }
+
+            //Set fitness of species
+            s.setSpeciesFitness();
+            totalSpeciesFitness += s.getSpeciesFitness();
+
+            //Remove the worst performing genomes
+            s.removeWorstGenomes();
+        }
+
+        Genome[] newGeneration = new Genome[Config.POPULATION];
+        int genomeIndex = 0;
+        float excessOffspring = 0;
+        for (Species s: species) {
+            //Set the amount of offspring for the next generation
+            float floatAmountOfOffspring = s.getAmountOfOffspring(totalSpeciesFitness) + excessOffspring;
+            //Try to fix unreliable rounding
+            if (Math.ceil(floatAmountOfOffspring) - floatAmountOfOffspring < 0.001) {
+                floatAmountOfOffspring = (float) Math.ceil(floatAmountOfOffspring);
+            }
+            int amountOfOffspring = (int) Math.floor(floatAmountOfOffspring);
+            excessOffspring += floatAmountOfOffspring - amountOfOffspring;
+                //System.out.println("floatAmountOfOffspring = " + floatAmountOfOffspring + "; amountOfOffspring = " + amountOfOffspring + "; excessOffspring = " + excessOffspring);
+
+            //Create new genomes
+            for (int i = 0; i < amountOfOffspring; i++) {
+                newGeneration[genomeIndex] = s.createNewGenome();
+                genomeIndex++;
+            }
+        }
+
+        //Test
+        if (genomeIndex != Config.POPULATION) {
+            System.out.println("\nBUG: Amount of genomes created does not equal the required amount! Genomes created = " + genomeIndex + "; genomes required = " + Config.POPULATION + "; excessOffspring = " + excessOffspring);
+            System.exit(1);
+        }
+
+        //Divide new genomes into species
+        species = new ArrayList<>();        //Create new ArrayList species, deleting the old one
+        for (Genome g: newGeneration) {
+            addGenomeToSpecies(g);
+        }
+
+    }
+
+    //Debugging
     public static Genome[] getGenomes() {
         return genomes;
+    }
+
+    public static ArrayList<Species> getSpecies() {
+        return species;
     }
 
 }

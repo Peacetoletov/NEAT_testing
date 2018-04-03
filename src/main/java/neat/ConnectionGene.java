@@ -17,8 +17,7 @@ public class ConnectionGene {
         this.innovation = innovation;
         this.inNode = inNode;
         this.outNode = outNode;
-        //this.weight = weight;     //TODO: change this back!
-        this.weight = 1;
+        this.weight = weight;
         this.expressed = expressed;
     }
 
@@ -44,6 +43,10 @@ public class ConnectionGene {
 
     public float getWeight() {
         return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     public boolean getExpressed() {

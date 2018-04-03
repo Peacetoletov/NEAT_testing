@@ -3,6 +3,8 @@ package neat;
 import config.Config;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 /**
  * Created by lukas on 31.3.2018.
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 public class Species {
 
     private ArrayList<Genome> genomes = new ArrayList<>();
+    private float speciesFitness;
+    private static Random rand = new Random();
 
     public Species(Genome representativeGenome) {
         this.genomes.add(representativeGenome);
@@ -64,13 +68,13 @@ public class Species {
 
         /**
          * The source code which I downloaded calculates connections (he named it N) as N = matching+disjoint+excess;
-         * I'm not sure who has this correctly
+         * I'm not sure who has this correct
          */
 
             //System.out.println("excess = " + excess + "; disjoint = " + disjoint + "; matching = " + matching + "; avgWeightDifference = " + avgWeightDifference);
 
         float delta = ((Config.EXCESS_COEFFICIENT * excess + Config.DISJOINT_COEFFICIENT * disjoint) / connections) + Config.WEIGHT_COEFFICIENT * avgWeightDifference;
-            System.out.println("Delta = " + delta);
+            //System.out.println("Delta = " + delta);
         return delta < Config.DELTA_THRESHOLD;
     }
 
@@ -98,6 +102,90 @@ public class Species {
         } else {
             return con2.size();
         }
+    }
+
+    public void removeWorstGenomes() {
+        Collections.sort(genomes);      //Sort the genomes list by fitness in descending order
+        int toRemove = (int) Math.floor(genomes.size() * Config.REMOVE_EACH_GENERATION);
+        //Loop through the genomes array backwards, stop when all worst genomes are removed
+        int size = genomes.size();
+        for (int i = size - 1; i > size - 1 - toRemove; i--) {
+            genomes.remove(i);
+        }
+    }
+
+    public Genome createNewGenome() {
+        //Choose parents
+        Genome g1 = genomes.get(rand.nextInt(genomes.size()));
+        Genome g2 = genomes.get(rand.nextInt(genomes.size()));
+
+        /*
+        System.out.println("\nParent 1:\n");
+        g1.printNodes();
+        g1.printConnections();
+        System.out.println("\nParent 2:\n");
+        g2.printNodes();
+        g2.printConnections();
+        */
+
+        //Create a new genome, apply crossover
+        Genome child;
+        if (rand.nextFloat() < Config.CROSSOVER_CHANCE) {
+            System.out.println("Applying crossover!");
+            child = Crossover.crossover(g1, g2);
+        } else {
+            System.out.println("Not applying crossover!");
+            child = g1;
+        }
+
+        //Apply mutations
+        //New node
+        if (rand.nextFloat() < Config.NEW_NODE_MUTATION_CHANCE) {
+            System.out.println("Adding new node!");
+            Mutations.addNode(child);
+        }
+
+        //New connection
+        if (rand.nextFloat() < Config.NEW_CONNECTION_MUTATION_CHANCE) {
+            System.out.println("Adding new connection!");
+            Mutations.addConnection(child);
+        }
+
+        //Change existing connection
+        if (rand.nextFloat() < Config.WEIGHT_MUTATION_CHANCE) {
+            if (rand.nextFloat() < Config.WEIGHT_PERTURB_CHANCE) {
+                //Perturb existing weight
+                System.out.println("Perturbing a weight!");
+                Mutations.perturbWeight(child);
+            } else {
+                //New random weight
+                System.out.println("Assigning a random weight!");
+                Mutations.assignRandomWeight(child);
+            }
+        }
+
+        /*
+        System.out.println("\nChild:\n");
+        child.printNodes();
+        child.printConnections();
+        */
+        return child;
+    }
+
+    public float getAmountOfOffspring(float totalSpeciesFitness) {
+        return (Config.POPULATION / totalSpeciesFitness) * speciesFitness;
+    }
+
+    public void setSpeciesFitness() {
+        float totalFitness = 0;
+        for (Genome g: genomes) {
+            totalFitness += g.getFitness();
+        }
+        speciesFitness = totalFitness / genomes.size();
+    }
+
+    public float getSpeciesFitness() {
+        return speciesFitness;
     }
 
     public void addGenome(Genome g) {

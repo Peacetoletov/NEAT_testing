@@ -10,7 +10,7 @@ import java.util.*;
  * This class represents 1 unit of life. It has it's own neural network.
  */
 
-public class Genome {
+public class Genome implements Comparable<Genome> {
 
     /**
      * If I do this in a clever way, I will only need to inherit connections.
@@ -19,7 +19,7 @@ public class Genome {
 
     private ArrayList<ConnectionGene> connections = new ArrayList<>();
     private ArrayList<NodeGene> nodes = new ArrayList<>();
-    private float fitness = new Random().nextFloat();       //TODO: This needs to be changed. This random assignment is here only for crossover testing.
+    private float fitness;
 
     public Genome() {
         /**
@@ -94,6 +94,18 @@ public class Genome {
 
     public float getFitness() {
         return fitness;
+    }
+
+    @Override
+    public int compareTo(Genome g) {
+        float difference = g.getFitness() - this.fitness;       //Descending order
+        if (difference > 0) {
+            return 1;
+        } else if (difference < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     //Debugging
