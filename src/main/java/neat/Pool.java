@@ -3,6 +3,7 @@ package neat;
 import config.Config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by lukas on 28.3.2018.
@@ -23,6 +24,7 @@ public class Pool {
     public static void createInitialPopulation() {
         //Create an original genome
         genomes[0] = new Genome();
+        genomes[0].evaluate();
         addGenomeToSpecies(genomes[0]);
 
         //Create copies of the original genome with randomized connection weights
@@ -38,6 +40,7 @@ public class Pool {
 
             //Create new genome
             genomes[i] = new Genome(connections, nodes);
+            genomes[i].evaluate();
             addGenomeToSpecies(genomes[i]);
         }
     }
@@ -58,8 +61,7 @@ public class Pool {
         return nodes;
     }
 
-    //change to private
-    public static void addGenomeToSpecies(Genome g) {
+    private static void addGenomeToSpecies(Genome g) {
         for (Species s: species) {
             //If a given species has no members, I can either delete it or skip it. I chose the skip option.
             if (s.getGenomes().size() == 0) {
@@ -87,10 +89,13 @@ public class Pool {
         float totalSpeciesFitness = 0;
         for (Species s: species) {
             //Test their fitness
+
+            /*
             for (Genome g: s.getGenomes()) {
                 g.evaluate();
-                //System.out.println("This genome has fitness: " + g.getFitness());
+                System.out.println("After evaluation: This genome has fitness: " + g.getFitness());
             }
+            */
 
             //Set fitness of species
             s.setSpeciesFitness();
@@ -106,16 +111,24 @@ public class Pool {
         for (Species s: species) {
             //Set the amount of offspring for the next generation
             float floatAmountOfOffspring = s.getAmountOfOffspring(totalSpeciesFitness) + excessOffspring;
-            //Try to fix unreliable rounding
-            if (Math.ceil(floatAmountOfOffspring) - floatAmountOfOffspring < 0.001) {
-                floatAmountOfOffspring = (float) Math.ceil(floatAmountOfOffspring);
-            }
+            excessOffspring = 0;
             int amountOfOffspring = (int) Math.floor(floatAmountOfOffspring);
             excessOffspring += floatAmountOfOffspring - amountOfOffspring;
                 //System.out.println("floatAmountOfOffspring = " + floatAmountOfOffspring + "; amountOfOffspring = " + amountOfOffspring + "; excessOffspring = " + excessOffspring);
 
             //Create new genomes
             for (int i = 0; i < amountOfOffspring; i++) {
+                if (genomeIndex >= newGeneration.length) {
+                    //This can also happen due to bad rounding
+                    //System.out.println("\nSomething went wrong! excessOffspring = " + excessOffspring);
+                    break;
+                }
+                newGeneration[genomeIndex] = s.createNewGenome();
+                genomeIndex++;
+            }
+
+            //Sometimes it creates 1 fewer genome due to bad rounding. This is here to fix it.
+            if (excessOffspring > 0.999 && genomeIndex < newGeneration.length) {
                 newGeneration[genomeIndex] = s.createNewGenome();
                 genomeIndex++;
             }
@@ -127,12 +140,23 @@ public class Pool {
             System.exit(1);
         }
 
-        //Divide new genomes into species
+        //Divide new genomes into species, evaluate them
         species = new ArrayList<>();        //Create new ArrayList species, deleting the old one
         for (Genome g: newGeneration) {
             addGenomeToSpecies(g);
+            g.evaluate();
         }
 
+    }
+
+    public static Genome getBestGenome() {
+        ArrayList<Genome> bestSpeciesRepresentatives = new ArrayList<>();
+        for (Species s: species) {
+            bestSpeciesRepresentatives.add(s.getBestGenome());
+        }
+        Collections.sort(bestSpeciesRepresentatives);
+
+        return bestSpeciesRepresentatives.get(0);
     }
 
     //Debugging

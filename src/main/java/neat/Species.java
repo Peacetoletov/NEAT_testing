@@ -131,23 +131,23 @@ public class Species {
         //Create a new genome, apply crossover
         Genome child;
         if (rand.nextFloat() < Config.CROSSOVER_CHANCE) {
-            System.out.println("Applying crossover!");
+                //System.out.println("Applying crossover!");
             child = Crossover.crossover(g1, g2);
         } else {
-            System.out.println("Not applying crossover!");
+                //System.out.println("Not applying crossover!");
             child = g1;
         }
 
         //Apply mutations
         //New node
         if (rand.nextFloat() < Config.NEW_NODE_MUTATION_CHANCE) {
-            System.out.println("Adding new node!");
+                //System.out.println("Adding new node!");
             Mutations.addNode(child);
         }
 
         //New connection
         if (rand.nextFloat() < Config.NEW_CONNECTION_MUTATION_CHANCE) {
-            System.out.println("Adding new connection!");
+                //System.out.println("Adding new connection!");
             Mutations.addConnection(child);
         }
 
@@ -155,11 +155,11 @@ public class Species {
         if (rand.nextFloat() < Config.WEIGHT_MUTATION_CHANCE) {
             if (rand.nextFloat() < Config.WEIGHT_PERTURB_CHANCE) {
                 //Perturb existing weight
-                System.out.println("Perturbing a weight!");
+                    //System.out.println("Perturbing a weight!");
                 Mutations.perturbWeight(child);
             } else {
                 //New random weight
-                System.out.println("Assigning a random weight!");
+                    //System.out.println("Assigning a random weight!");
                 Mutations.assignRandomWeight(child);
             }
         }
@@ -172,7 +172,13 @@ public class Species {
         return child;
     }
 
+    public Genome getBestGenome() {
+        Collections.sort(genomes);
+        return genomes.get(0);
+    }
+
     public float getAmountOfOffspring(float totalSpeciesFitness) {
+        //System.out.println("Amount of offspring = " + (Config.POPULATION / totalSpeciesFitness) * speciesFitness + "; totalSpeciesFitness = " + totalSpeciesFitness + "; speciesFitness = " + speciesFitness);
         return (Config.POPULATION / totalSpeciesFitness) * speciesFitness;
     }
 

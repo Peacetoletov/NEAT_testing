@@ -25,9 +25,22 @@ public class SpeciesTest {
         }
         */
 
+        long timeAtStart = System.currentTimeMillis();
 
-        System.out.println("There are " + Pool.getSpecies().size() + " species.");
+        for (int i = 0; i < 400; i++) {
+            Pool.getBestGenome();
 
-        Pool.createNextGeneration();
+            System.out.println(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species.");
+
+            Pool.createNextGeneration();
+        }
+
+        long timeAtEnd = System.currentTimeMillis();
+        long timeElapsed = timeAtEnd - timeAtStart;
+        System.out.println("This took " + timeElapsed + " milliseconds\n\n\n");
+
+        Genome test = Pool.getBestGenome();
+        test.printConnections();
+        test.printNodes();
     }
 }
