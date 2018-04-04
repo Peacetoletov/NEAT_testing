@@ -25,7 +25,8 @@ public class SpeciesTest {
         }
         */
 
-        /*
+
+
         long timeAtStart = System.currentTimeMillis();
 
         for (int i = 0; i < 1000; i++) {
@@ -37,6 +38,11 @@ public class SpeciesTest {
             }
             System.out.println();
 
+            if (Pool.getBestGenome().getFitness() == 4) {
+                System.out.println("Best solution found!");
+                break;
+            }
+
             Pool.createNextGeneration();
         }
 
@@ -44,13 +50,22 @@ public class SpeciesTest {
         long timeElapsed = timeAtEnd - timeAtStart;
         System.out.println("This took " + timeElapsed + " milliseconds\n\n\n");
 
+        /*
+        System.out.println("There are " + Pool.getSpecies().size() + " species.");
+        Genome testGenome = Pool.getSpecies().get(Pool.getSpecies().size() - 1).getGenomes().get(0);
+        System.out.println("One genome:");
+        testGenome.printConnections();
+        */
+
+
+
+
+        /*
         Genome test = Pool.getBestGenome();
         test.printConnections();
         test.printNodes();
         */
 
-        Genome copy = genomes[0].copy();
-        genomes[0].printConnections();
-        copy.printConnections();
+
     }
 }

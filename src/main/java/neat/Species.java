@@ -15,12 +15,14 @@ public class Species {
     private static Random rand = new Random();
 
     private ArrayList<Genome> genomes = new ArrayList<>();
-    //private final Genome representativeGenome;                        //This is used when checking if other genome belongs in this species. This persists even if the original genome gets removed or changed.
+    private final Genome representativeGenome;                        //This is used when checking if other genome belongs in this species. This persists even if the original genome gets removed or changed.
     private float speciesFitness;
+    private float bestIndividualHistoricalFitness = 0;
+    private int staleness = 0;
 
-    public Species(Genome representativeGenome) {
-        //this.representativeGenome = //representativeGenome;  //must create a copy
-        this.genomes.add(representativeGenome);
+    public Species(Genome firstGenome) {
+        this.representativeGenome = firstGenome.copy();
+        this.genomes.add(firstGenome);
     }
 
     public static boolean isSameSpecies(Genome g1, Genome g2) {
@@ -175,6 +177,19 @@ public class Species {
         return child;
     }
 
+    public void checkStaleness() {
+        float bestFitness = getBestGenome().getFitness();
+            //System.out.println("bestFitness = " + bestFitness + "; bestIndividualHistoricalFitness = " + bestIndividualHistoricalFitness);
+        if (bestFitness > bestIndividualHistoricalFitness) {
+            bestIndividualHistoricalFitness = bestFitness;
+            staleness = 0;
+        } else {
+            staleness++;
+        }
+
+            //System.out.println("Staleness = " + staleness);
+    }
+
     public Genome getBestGenome() {
         Collections.sort(genomes);
         return genomes.get(0);
@@ -185,16 +200,28 @@ public class Species {
         return (Config.POPULATION / totalSpeciesFitness) * speciesFitness;
     }
 
+    public Genome getRepresentativeGenome() {
+        return representativeGenome;
+    }
+
     public void setSpeciesFitness() {
-        float totalFitness = 0;
-        for (Genome g: genomes) {
-            totalFitness += g.getFitness();
+        if (staleness < Config.SPECIES_MAX_STALENESS) {
+            float totalFitness = 0;
+            for (Genome g: genomes) {
+                totalFitness += g.getFitness();
+            }
+            speciesFitness = totalFitness / genomes.size();
+        } else {
+            speciesFitness = 0;
         }
-        speciesFitness = totalFitness / genomes.size();
     }
 
     public float getSpeciesFitness() {
         return speciesFitness;
+    }
+
+    public int getStaleness() {
+        return staleness;
     }
 
     public void addGenome(Genome g) {

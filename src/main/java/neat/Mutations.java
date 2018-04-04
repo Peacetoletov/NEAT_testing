@@ -143,7 +143,19 @@ public class Mutations {
     public static void perturbWeight(Genome g) {
         //Randomly choose a connection
         ConnectionGene con = g.getConnections().get((int) (Math.random() * g.getConnections().size()));
-        con.setWeight(con.getWeight() * (rand.nextFloat() - 0.5f) * 2 * Config.WEIGHT_PERTURB_RANGE);
+
+        //Choose a new weight
+        float newWeight = con.getWeight() * (rand.nextFloat() - 0.5f) * 2 * Config.WEIGHT_PERTURB_RANGE;
+
+        //If the value of the weight is too big, reduce it
+        if (Math.abs(newWeight) > Config.MAX_WEIGHT_VALUE) {
+            if (newWeight > 0) {
+                newWeight = Config.MAX_WEIGHT_VALUE;
+            } else {
+                newWeight = - Config.MAX_WEIGHT_VALUE;
+            }
+        }
+        con.setWeight(newWeight);
     }
 
     public static void assignRandomWeight(Genome g) {

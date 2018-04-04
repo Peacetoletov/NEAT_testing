@@ -23,10 +23,15 @@ public class Pool {
      *
      * So, this is the approach:
      * 1. Create a way of saving the "original genome" of a species.
-     * 2. Use it to for checking if a genome belong in that same species.
+     * 2. Use it for checking if a genome belongs in the same species.
      * 3. Remove overriding the ArrayList, use the same one over and over again instead.
+     *
+     * 1. Done
      */
 
+    //TODO: I have probably created too many sorts in Species. Remove the unnecessary ones.
+
+    //TODO: There are way too many species because they are getting ridiculous weight values. I need to put a cap on max weight to fix this.
 
 
     /**
@@ -62,36 +67,10 @@ public class Pool {
         }
     }
 
-    /*
-    private static ArrayList<ConnectionGene> copyConnections(ArrayList<ConnectionGene> originalConnections) {
-        ArrayList<ConnectionGene> connections = new ArrayList<>();
-        for (ConnectionGene con: originalConnections) {
-            connections.add(con.copy());
-        }
-        return connections;
-    }
-
-    private static ArrayList<NodeGene> copyNodes(ArrayList<NodeGene> originalNodes) {
-        ArrayList<NodeGene> nodes = new ArrayList<>();
-        for (NodeGene node: originalNodes) {
-            nodes.add(node.copy());
-        }
-        return nodes;
-    }
-    */
-
     private static void addGenomeToSpecies(Genome g) {
         for (Species s: species) {
-            //If a given species has no members, I can either delete it or skip it. I chose the skip option.
-            if (s.getGenomes().size() == 0) {
-                continue;       //TODO: In future, once everything else is completed, try changing this to removing instead of skipping.
-                                //never mind, I'm overriding the ArrayList species anyway whenever I create a new generation
-            }
-
             //Compare this genome with a representative genome of the species s.
-            Genome representativeGenome = s.getGenomes().get(0);
-                //System.out.println("test; s size = " + s.getGenomes().size());
-            if (Species.isSameSpecies(g, representativeGenome)) {
+            if (Species.isSameSpecies(g, s.getRepresentativeGenome())) {
                 s.addGenome(g);
                     //System.out.println("Adding to an existing species");
                 return;
@@ -107,7 +86,13 @@ public class Pool {
     public static void createNextGeneration() {
         float totalSpeciesFitness = 0;
         for (Species s: species) {
-            //Set fitness of species
+            if (s.getGenomes().size() == 0) {
+                continue;
+            }
+            //Increment staleness if the best individual fitness didn't get better
+            s.checkStaleness();
+
+            //Set fitness of each species
             s.setSpeciesFitness();
             totalSpeciesFitness += s.getSpeciesFitness();
 
@@ -115,10 +100,20 @@ public class Pool {
             s.removeWorstGenomes();
         }
 
+        //Test
+        //TODO: Make sure this can't happen
+        if (totalSpeciesFitness == 0) {
+            System.out.println("\nBUG: totalSpeciesFitness = 0. All species are stale. No species were allowed to reproduce.");
+            System.exit(1);
+        }
+
         Genome[] newGeneration = new Genome[Config.POPULATION];
         int genomeIndex = 0;
         float excessOffspring = 0;
         for (Species s: species) {
+            if (s.getGenomes().size() == 0) {
+                continue;
+            }
             //Set the amount of offspring for the next generation
             float floatAmountOfOffspring = s.getAmountOfOffspring(totalSpeciesFitness) + excessOffspring;
             excessOffspring = 0;
@@ -142,6 +137,9 @@ public class Pool {
                 newGeneration[genomeIndex] = s.createNewGenome();
                 genomeIndex++;
             }
+
+            //Remove all old genomes
+            s.getGenomes().clear();
         }
 
         //Test
@@ -151,8 +149,7 @@ public class Pool {
         }
 
         //Divide new genomes into species, evaluate them
-        //TODO: This needs to get changed
-        species = new ArrayList<>();        //Create new ArrayList species, deleting the old one
+        //species = new ArrayList<>();        //Create new ArrayList species, deleting the old one
         for (Genome g: newGeneration) {
             addGenomeToSpecies(g);
             g.evaluate();
@@ -163,6 +160,9 @@ public class Pool {
     public static Genome getBestGenome() {
         ArrayList<Genome> bestSpeciesRepresentatives = new ArrayList<>();
         for (Species s: species) {
+            if (s.getGenomes().size() == 0) {
+                continue;
+            }
             bestSpeciesRepresentatives.add(s.getBestGenome());
         }
         Collections.sort(bestSpeciesRepresentatives);
