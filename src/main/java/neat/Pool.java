@@ -11,6 +11,23 @@ import java.util.Collections;
  */
 
 public class Pool {
+    //TODO: Add poolStaleness and speciesStaleness. I think this will resolve the issue of having 250+ species with 300 population.
+    /**
+     * ^ How to do this?
+     * I need to keep the species array and don't override it with each new generation.
+     * That way I keep track of all species. Now, how do I distinguish the species?
+     * The moment a new species is created, it is defined by the genome that created it.
+     * But I lose this information if I remove that particular genome.
+     * What I can do is keep the information about the original genome even if the genome gets eliminated or changed.
+     * That way, all species will be distinguishable.
+     *
+     * So, this is the approach:
+     * 1. Create a way of saving the "original genome" of a species.
+     * 2. Use it to for checking if a genome belong in that same species.
+     * 3. Remove overriding the ArrayList, use the same one over and over again instead.
+     */
+
+
 
     /**
      * I finally found out why there was a poolStaleness in the code I downloaded.
@@ -30,8 +47,8 @@ public class Pool {
         //Create copies of the original genome with randomized connection weights
         for (int i = 1; i < Config.POPULATION; i++) {
             //Create a copy of connections and nodes
-            ArrayList<ConnectionGene> connections = copyConnections(genomes[0].getConnections());
-            ArrayList<NodeGene> nodes = copyNodes(genomes[0].getNodes());
+            ArrayList<ConnectionGene> connections = genomes[0].copyConnections();
+            ArrayList<NodeGene> nodes = genomes[0].copyNodes();
 
             //Randomize connection weights
             for (ConnectionGene con: connections) {
@@ -45,6 +62,7 @@ public class Pool {
         }
     }
 
+    /*
     private static ArrayList<ConnectionGene> copyConnections(ArrayList<ConnectionGene> originalConnections) {
         ArrayList<ConnectionGene> connections = new ArrayList<>();
         for (ConnectionGene con: originalConnections) {
@@ -60,6 +78,7 @@ public class Pool {
         }
         return nodes;
     }
+    */
 
     private static void addGenomeToSpecies(Genome g) {
         for (Species s: species) {
@@ -88,15 +107,6 @@ public class Pool {
     public static void createNextGeneration() {
         float totalSpeciesFitness = 0;
         for (Species s: species) {
-            //Test their fitness
-
-            /*
-            for (Genome g: s.getGenomes()) {
-                g.evaluate();
-                System.out.println("After evaluation: This genome has fitness: " + g.getFitness());
-            }
-            */
-
             //Set fitness of species
             s.setSpeciesFitness();
             totalSpeciesFitness += s.getSpeciesFitness();
@@ -141,6 +151,7 @@ public class Pool {
         }
 
         //Divide new genomes into species, evaluate them
+        //TODO: This needs to get changed
         species = new ArrayList<>();        //Create new ArrayList species, deleting the old one
         for (Genome g: newGeneration) {
             addGenomeToSpecies(g);

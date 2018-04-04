@@ -25,12 +25,17 @@ public class SpeciesTest {
         }
         */
 
+        /*
         long timeAtStart = System.currentTimeMillis();
 
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 1000; i++) {
             Pool.getBestGenome();
 
-            System.out.println(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species.");
+            System.out.print(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species. Species' population: ");
+            for (Species s: Pool.getSpecies()) {
+                System.out.print("|" + s.getGenomes().size());
+            }
+            System.out.println();
 
             Pool.createNextGeneration();
         }
@@ -42,5 +47,10 @@ public class SpeciesTest {
         Genome test = Pool.getBestGenome();
         test.printConnections();
         test.printNodes();
+        */
+
+        Genome copy = genomes[0].copy();
+        genomes[0].printConnections();
+        copy.printConnections();
     }
 }

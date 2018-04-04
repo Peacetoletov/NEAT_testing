@@ -12,11 +12,14 @@ import java.util.Random;
  */
 public class Species {
 
-    private ArrayList<Genome> genomes = new ArrayList<>();
-    private float speciesFitness;
     private static Random rand = new Random();
 
+    private ArrayList<Genome> genomes = new ArrayList<>();
+    //private final Genome representativeGenome;                        //This is used when checking if other genome belongs in this species. This persists even if the original genome gets removed or changed.
+    private float speciesFitness;
+
     public Species(Genome representativeGenome) {
+        //this.representativeGenome = //representativeGenome;  //must create a copy
         this.genomes.add(representativeGenome);
     }
 
@@ -135,7 +138,7 @@ public class Species {
             child = Crossover.crossover(g1, g2);
         } else {
                 //System.out.println("Not applying crossover!");
-            child = g1;
+            child = g1.copy();
         }
 
         //Apply mutations

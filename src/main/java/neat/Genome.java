@@ -84,6 +84,28 @@ public class Genome implements Comparable<Genome> {
         this.fitness = XOR.evaluate(network);
     }
 
+    public Genome copy() {
+        ArrayList<ConnectionGene> connectionsCopy = copyConnections();
+        ArrayList<NodeGene> nodesCopy = copyNodes();
+        return new Genome(connectionsCopy, nodesCopy);
+    }
+
+    public ArrayList<ConnectionGene> copyConnections() {
+        ArrayList<ConnectionGene> connectionsCopy = new ArrayList<>();
+        for (ConnectionGene con: connections) {
+            connectionsCopy.add(con.copy());
+        }
+        return connectionsCopy;
+    }
+
+    public ArrayList<NodeGene> copyNodes() {
+        ArrayList<NodeGene> nodesCopy = new ArrayList<>();
+        for (NodeGene node: nodes) {
+            nodesCopy.add(node.copy());
+        }
+        return nodesCopy;
+    }
+
     public ArrayList<ConnectionGene> getConnections() {
         return connections;
     }
