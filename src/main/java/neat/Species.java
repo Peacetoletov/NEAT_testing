@@ -1,6 +1,7 @@
 package neat;
 
 import config.Config;
+import debugging.Debugger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,19 +11,22 @@ import java.util.Random;
  * Created by lukas on 31.3.2018.
  * This class represents each species. This is NOT a static class.
  */
-public class Species {
+public class Species implements Comparable<Species> {
 
     private static Random rand = new Random();
 
     private ArrayList<Genome> genomes = new ArrayList<>();
     private final Genome representativeGenome;                        //This is used when checking if other genome belongs in this species. This persists even if the original genome gets removed or changed.
-    private float speciesFitness;
-    private float bestIndividualHistoricalFitness = 0;
+    private float sharedFitness = 0;
+    private float bestHistoricalSharedFitness = 0;
     private int staleness = 0;
+
+    private final int id;       //debugging only
 
     public Species(Genome firstGenome) {
         this.representativeGenome = firstGenome.copy();
         this.genomes.add(firstGenome);
+        this.id = Debugger.newId();
     }
 
     public static boolean isSameSpecies(Genome g1, Genome g2) {
@@ -174,20 +178,25 @@ public class Species {
         child.printNodes();
         child.printConnections();
         */
+
         return child;
     }
 
     public void checkStaleness() {
-        float bestFitness = getBestGenome().getFitness();
-            //System.out.println("bestFitness = " + bestFitness + "; bestIndividualHistoricalFitness = " + bestIndividualHistoricalFitness);
-        if (bestFitness > bestIndividualHistoricalFitness) {
-            bestIndividualHistoricalFitness = bestFitness;
+        if (sharedFitness > bestHistoricalSharedFitness) {
+            bestHistoricalSharedFitness = sharedFitness;
             staleness = 0;
         } else {
             staleness++;
         }
 
-            //System.out.println("Staleness = " + staleness);
+            //System.out.println("Species " + id + ": Staleness = " + staleness + "; sharedFitness = " + sharedFitness + "; best historical fitness = " + bestHistoricalSharedFitness);
+    }
+
+    public void reset() {
+        this.staleness = 0;
+        this.sharedFitness = 0;
+        this.bestHistoricalSharedFitness = 0;
     }
 
     public Genome getBestGenome() {
@@ -195,29 +204,29 @@ public class Species {
         return genomes.get(0);
     }
 
-    public float getAmountOfOffspring(float totalSpeciesFitness) {
-        //System.out.println("Amount of offspring = " + (Config.POPULATION / totalSpeciesFitness) * speciesFitness + "; totalSpeciesFitness = " + totalSpeciesFitness + "; speciesFitness = " + speciesFitness);
-        return (Config.POPULATION / totalSpeciesFitness) * speciesFitness;
+    public float getAmountOfOffspring(float totalSharedFitness) {
+        //System.out.println("Amount of offspring = " + (Config.POPULATION / totalSharedFitness) * sharedFitness + "; totalSharedFitness = " + totalSharedFitness + "; sharedFitness = " + sharedFitness);
+        return (Config.POPULATION / totalSharedFitness) * sharedFitness;
     }
 
     public Genome getRepresentativeGenome() {
         return representativeGenome;
     }
 
-    public void setSpeciesFitness() {
-        if (staleness < Config.SPECIES_MAX_STALENESS) {
-            float totalFitness = 0;
-            for (Genome g: genomes) {
-                totalFitness += g.getFitness();
-            }
-            speciesFitness = totalFitness / genomes.size();
-        } else {
-            speciesFitness = 0;
+    public float calculateSharedFitness() {
+        float totalFitness = 0;
+        for (Genome g: genomes) {
+            totalFitness += g.getFitness();
         }
+        return (totalFitness / genomes.size());
     }
 
-    public float getSpeciesFitness() {
-        return speciesFitness;
+    public void setSharedFitness(float sharedFitness) {
+        this.sharedFitness = sharedFitness;
+    }
+
+    public float getSharedFitness() {
+        return sharedFitness;
     }
 
     public int getStaleness() {
@@ -230,6 +239,23 @@ public class Species {
 
     public ArrayList<Genome> getGenomes() {
         return genomes;
+    }
+
+    @Override
+    public int compareTo(Species compareSpecies) {
+        float difference = this.sharedFitness - compareSpecies.getSharedFitness();      //Ascending order
+        if (difference > 0) {
+            return 1;
+        } else if (difference < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    //Debugging
+    public int getId() {
+        return id;
     }
 
 }

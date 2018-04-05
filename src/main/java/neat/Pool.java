@@ -11,28 +11,9 @@ import java.util.Collections;
  */
 
 public class Pool {
-    //TODO: Add poolStaleness and speciesStaleness. I think this will resolve the issue of having 250+ species with 300 population.
-    /**
-     * ^ How to do this?
-     * I need to keep the species array and don't override it with each new generation.
-     * That way I keep track of all species. Now, how do I distinguish the species?
-     * The moment a new species is created, it is defined by the genome that created it.
-     * But I lose this information if I remove that particular genome.
-     * What I can do is keep the information about the original genome even if the genome gets eliminated or changed.
-     * That way, all species will be distinguishable.
-     *
-     * So, this is the approach:
-     * 1. Create a way of saving the "original genome" of a species.
-     * 2. Use it for checking if a genome belongs in the same species.
-     * 3. Remove overriding the ArrayList, use the same one over and over again instead.
-     *
-     * 1. Done
-     */
+    //TODO: Add poolStaleness.
 
     //TODO: I have probably created too many sorts in Species. Remove the unnecessary ones.
-
-    //TODO: There are way too many species because they are getting ridiculous weight values. I need to put a cap on max weight to fix this.
-
 
     /**
      * I finally found out why there was a poolStaleness in the code I downloaded.
@@ -84,24 +65,57 @@ public class Pool {
     }
 
     public static void createNextGeneration() {
-        float totalSpeciesFitness = 0;
+        //Set shared fitness of each species.
         for (Species s: species) {
             if (s.getGenomes().size() == 0) {
+                s.setSharedFitness(0);
                 continue;
             }
-            //Increment staleness if the best individual fitness didn't get better
+
+            s.setSharedFitness(s.calculateSharedFitness());
+        }
+
+        //Sort species by shared fitness in ascending order
+        Collections.sort(species);
+
+        //Loop through the array, starting with the worst ones. If a species is stale, change its fitness to 0. If the a species is NOT stale, increment some variable.
+        //If I get to the last (best) 2 species and less than 2 species are allowed to reproduce, they will be able to reproduce even if they are stale.
+        int speciesReproducible = 0;
+
+        float totalSpeciesFitness = 0;
+        for (int i = 0; i < species.size(); i++) {
+            Species s = species.get(i);
+
+            //System.out.println("Species " +s.getId() + " has fitness of " + s.getSharedFitness());
+
+            if (s.getGenomes().size() == 0) {
+                //System.out.println("Species " + s.getId() + " has no members.");
+                continue;
+            }
+
+            //Increment staleness if the best shared fitness didn't get better
             s.checkStaleness();
 
-            //Set fitness of each species
-            s.setSpeciesFitness();
-            totalSpeciesFitness += s.getSpeciesFitness();
+            //If the species is stale, set fitness to 0. At least 2 species (if there are at least two) must always be able to reproduce, even if they are stale.
+            if (i < species.size() + speciesReproducible - Config.ALWAYS_REPRODUCIBLE_SPECIES - 1) {
+                //Fitness of these species will be set to 0 if the species is stale.
+                //If the species is not stale, increment speciesReproducible
+                if (s.getStaleness() >= Config.SPECIES_MAX_STALENESS) {
+                    //System.out.println("Species " + s.getId() + " went stale! It can't reproduce. Staleness of this species = " + s.getStaleness());
+                    s.setSharedFitness(0);
+                    s.reset();         //Staleness and best historical fitness need to be reset so that this species doesn't become dead forever.
+                } else {
+                    speciesReproducible++;
+                }
+            }
+
+            totalSpeciesFitness += s.getSharedFitness();
 
             //Remove the worst performing genomes
             s.removeWorstGenomes();
         }
 
         //Test
-        //TODO: Make sure this can't happen
         if (totalSpeciesFitness == 0) {
             System.out.println("\nBUG: totalSpeciesFitness = 0. All species are stale. No species were allowed to reproduce.");
             System.exit(1);

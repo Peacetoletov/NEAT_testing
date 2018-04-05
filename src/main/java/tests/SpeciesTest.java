@@ -27,16 +27,22 @@ public class SpeciesTest {
 
 
 
+
         long timeAtStart = System.currentTimeMillis();
 
         for (int i = 0; i < 1000; i++) {
             Pool.getBestGenome();
 
-            System.out.print(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species. Species' population: ");
+            //System.out.print(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species. Species' population: ");
+            //System.out.print(i + " There are " + Pool.getSpecies().size() + " species. Species' population: ");
+            System.out.println(i + " Best genome has fitness " + Pool.getBestGenome().getFitness() + ". There are " + Pool.getSpecies().size() + " species.");
+
+            /*
             for (Species s: Pool.getSpecies()) {
-                System.out.print("|" + s.getGenomes().size());
+                System.out.print("|" + s.getGenomes().size() + "(" + s.getId() + ")");
             }
             System.out.println();
+            */
 
             if (Pool.getBestGenome().getFitness() == 4) {
                 System.out.println("Best solution found!");
@@ -46,26 +52,14 @@ public class SpeciesTest {
             Pool.createNextGeneration();
         }
 
+        Genome bestGenome = Pool.getBestGenome();
+        System.out.println("Best genome:");
+        bestGenome.printConnections();
+        bestGenome.printNodes();
+
         long timeAtEnd = System.currentTimeMillis();
         long timeElapsed = timeAtEnd - timeAtStart;
-        System.out.println("This took " + timeElapsed + " milliseconds\n\n\n");
-
-        /*
-        System.out.println("There are " + Pool.getSpecies().size() + " species.");
-        Genome testGenome = Pool.getSpecies().get(Pool.getSpecies().size() - 1).getGenomes().get(0);
-        System.out.println("One genome:");
-        testGenome.printConnections();
-        */
-
-
-
-
-        /*
-        Genome test = Pool.getBestGenome();
-        test.printConnections();
-        test.printNodes();
-        */
-
+        System.out.println("\n\n\nThis took " + timeElapsed + " milliseconds");
 
     }
 }
