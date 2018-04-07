@@ -12,4 +12,8 @@ public class InnovationCounter {
         innovation++;
         return innovation;
     }
+
+    public static void reset() {
+        innovation = -1;
+    }
 }

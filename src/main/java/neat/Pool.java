@@ -21,7 +21,7 @@ public class Pool {
      * If the entire population does not get better for 20 generations, only the top 2 species are allowed to reproduce.
      */
 
-    private static Genome[] genomes = new Genome[Config.POPULATION];         //I'm not sure if I want to store all genomes in an array here in Pool
+    private static Genome[] genomes = new Genome[Config.POPULATION];
     private static ArrayList<Species> species = new ArrayList<>();
 
     public static void createInitialPopulation() {
@@ -184,7 +184,13 @@ public class Pool {
         return bestSpeciesRepresentatives.get(0);
     }
 
-    //Debugging
+    //Debugging, testing
+    public static void resetEverything() {
+        genomes = new Genome[Config.POPULATION];
+        species = new ArrayList<>();
+        InnovationCounter.reset();
+    }
+
     public static Genome[] getGenomes() {
         return genomes;
     }
