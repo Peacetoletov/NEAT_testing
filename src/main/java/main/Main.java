@@ -10,14 +10,16 @@ import neat.Pool;
 /**
  * Possible changes to the algorithm:
  * 1) Change the way old genomes are removed and new genomes created.
- *      a) Reduce the number of offspring, but keep the parents. Don't remove them. This way, I will never lose the best genomes, therefore the best fitness can only go up with each generation.
+ *      @deprecated a) Reduce the number of offspring, but keep the parents. Don't remove them. This way, I will never lose the best genomes, therefore the best fitness can only go up with each generation.
  *      b) Instead of randomly choosing parents, make more fit genomes have a higher probability of passing on their genes.
+ * I tried a) and it made things a lot worse.
  */
 public class Main {
 
     public static void main(String[] args) {
         /**
-         * On average, the current algorithm took 184.96 generations to find a solution.
+         * On average, the current algorithm took 184.96 generations over 50 cycles to find a solution.
+         * With 0.75 genomes removed each generation, it took 136.5 generations over 100 cycles.
          */
 
         if (Config.OUTPUTS < 1) {

@@ -19,7 +19,7 @@ public class Config {
 
     //Population
     public static final int POPULATION = 300;
-    public static final float REMOVE_EACH_GENERATION = 0.5f;    //Portion of the worst performing genomes in the population that gets removed each generation
+    public static final float REMOVE_EACH_GENERATION = 0.75f;    //Portion of the worst performing genomes in the population that gets removed each generation
     public static final int SPECIES_MAX_STALENESS = 15;
     public static final int POOL_MAX_STALENESS = 20;
     public static final int ALWAYS_REPRODUCIBLE_SPECIES = 2;    //Amount of species that will always be able to reproduce, even if they are stale.
